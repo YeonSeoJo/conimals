@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
 
 export const ModalContainer = styled.div`
   text-align: center;
@@ -28,7 +27,6 @@ export const ModalBtn = styled.button`
   margin-top: 5px;
   color: black;
   background-color: white;
-  cursor: pointer;
   z-index: 999;
   position: relative;
   border: none;
@@ -39,8 +37,8 @@ export const ModalBtn = styled.button`
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   text-decoration: none;
   font-weight: 600;
-  transition: 0.25s;
-  cursor: auto;
+  margin-top: 15%;
+  cursor: pointer;
 `;
 
 export const ModalView = styled.div.attrs((props) => ({
@@ -58,10 +56,9 @@ export const ModalView = styled.div.attrs((props) => ({
 `;
 
 export default function ConfirmModal({ handleModal, children }) {
-  const navigate = useNavigate();
   return (
     <ModalContainer>
-      <div onClick={() => navigate('/')}>
+      <div onClick={() => window.location.replace('/')}>
         <ModalBackdrop onClick={handleModal}>
           <ModalView
             onClick={(event) => {
@@ -69,7 +66,7 @@ export default function ConfirmModal({ handleModal, children }) {
             }}
           >
             {children}
-            <div onClick={() => navigate('/')}>
+            <div onClick={() => window.location.replace('/')}>
               <ModalBtn onClick={handleModal}>확인</ModalBtn>
             </div>
           </ModalView>

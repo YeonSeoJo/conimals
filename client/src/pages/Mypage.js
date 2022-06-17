@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 
@@ -16,12 +15,9 @@ import MypageVector from '../assets/MypageVector';
 
 const TextContainer = styled.div`
   flex-direction: column;
-
 `;
 
 function Mypage() {
-  const navigate = useNavigate();
-
   const [userinfo, setUserinfo] = useState({
     id: '',
     userName: '',
@@ -57,6 +53,7 @@ function Mypage() {
           withCredentials: true,
         })
         .then((res) => {
+          console.log(res);
           setLoading(false);
           setUserinfo({
             id: res.data.data.id,
@@ -96,27 +93,34 @@ function Mypage() {
                 <>
                   <ModifyUsername />
                   <br />
-
-                  <ModifyPassword />
-                  <br />
+                  {localStorage.kakao ? null : (
+                    <>
+                      <ModifyPassword />
+                      <br />
+                    </>
+                  )}
                 </>
               ) : (
                 <>
                   <MypageContainer2>
                     <div>
-                      <h4>닉네임 </h4>
+                      <h4>닉네임</h4>
                     </div>
                     <EditInput value={userinfo.userName} disabled />
                     <br />
                     <br />
-                    <div>
-                      <h4>이메일 </h4>
-                    </div>
-                    <EditInput
-                      value={userinfo.userEmail}
-                      type='email'
-                      disabled
-                    />
+                    {userinfo.userEmail ? (
+                      <>
+                        <div>
+                          <h4>이메일</h4>
+                        </div>
+                        <EditInput
+                          value={userinfo.userEmail}
+                          type='email'
+                          disabled
+                        />
+                      </>
+                    ) : null}
                   </MypageContainer2>
                 </>
               )}
@@ -124,7 +128,6 @@ function Mypage() {
                 {modifyMode ? (
                   <>
                     <EditButton onClick={handleModifyMode}>수정완료</EditButton>
-                    <br />
                   </>
                 ) : (
                   <>
@@ -134,11 +137,11 @@ function Mypage() {
                     <Line />
                   </>
                 )}
+                <br />
                 <Withdrawal />
               </MypageContainer2>
             </TextContainer>
           </MypageContainer>
-
         </>
       ) : (
         <>'non-logined'</>

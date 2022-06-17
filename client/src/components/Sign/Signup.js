@@ -9,12 +9,61 @@ import {
 import Logo from '../../assets/Conimals_logo_horizontal1.png';
 import ConfirmModal from '../Modal/ConfirmModals';
 import Loading from '../../utils/LoadingIndicator';
-// import SignupsSvgImg from '../../assets/signup.svg';
 import SignupsImg from '../../assets/signup.png';
-import './Signup.css';
+import { Button } from '../../components/Button';
+import { ShadowBigInput } from '../Input';
+
+import styled from 'styled-components';
 
 const axios = require('axios');
 
+const SignupContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  align-items: center;
+  margin-top: 100px;
+`;
+
+const SignupField = styled.div`
+  width: 55vw;
+  height: 55vw;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 9;
+`;
+
+const SignupImg = styled.img`
+  width: 60%;
+`;
+
+const InputTitle = styled.div`
+  margin-top: 5%;
+  margin-left: 20%;
+  font-size: 20px;
+  text-align: left;
+`;
+
+const ValidateText = styled.div`
+  color: rgb(146, 17, 17);
+  font-size: 15px;
+  margin-top: 2%;
+`;
+
+const SignupLogin = styled.div`
+  width: 50%;
+  margin-top: 5%;
+  margin-left: 20%;
+`;
+
+const LoginLink = styled.a`
+  margin-left: 10%;
+  color: steelblue;
+  &:hover {
+    color: skyblue;
+  }
+`;
 function Signup() {
   const [userinfo, setUserinfo] = useState({
     userName: '',
@@ -43,44 +92,34 @@ function Signup() {
     setEmailError(false);
     setUsernameError(false);
     setLoading(true);
-    if (
-      !emailValidator(userinfo.userEmail) ||
-      !nicknameValidator(userinfo.userName) ||
-      !passwordValidator(userinfo.password) ||
-      !passwordMatchValidator(userinfo.password, userinfo.retypePassword)
-    ) {
-      if (!emailValidator(userinfo.userEmail)) {
-        setEmailError(true);
-        setLoading(false);
-      }
-      if (!nicknameValidator(userinfo.userName)) {
-        setUsernameError(true);
-        setLoading(false);
-      }
-      if (!passwordValidator(userinfo.password)) {
-        setPasswordError(true);
-        setLoading(false);
-      }
-      if (!passwordMatchValidator(userinfo.password, userinfo.retypePassword)) {
-        setConfirmPasswordError(true);
-        setLoading(false);
-      }
+    if (!emailValidator(userinfo.userEmail)) {
+      setEmailError(true);
+      setLoading(false);
+    }
+    if (!nicknameValidator(userinfo.userName)) {
+      setUsernameError(true);
+      setLoading(false);
+    }
+    if (!passwordValidator(userinfo.password)) {
+      setPasswordError(true);
+      setLoading(false);
+    }
+    if (!passwordMatchValidator(userinfo.password, userinfo.retypePassword)) {
+      setConfirmPasswordError(true);
+      setLoading(false);
     } else {
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/users/signup`,
-          {
-            userName: userinfo.userName,
-            userEmail: userinfo.userEmail,
-            password: userinfo.password,
-          },
-          {
-            headers: { 'Content-Type': 'application/json' },
-            withCredentials: true,
-            // "rejectUnauthorized": false
-          }
-        )
-        .then((res) => console.log(res));
+      axios.post(
+        `${process.env.REACT_APP_API_URL}/users/signup`,
+        {
+          userName: userinfo.userName,
+          userEmail: userinfo.userEmail,
+          password: userinfo.password,
+        },
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true,
+        }
+      );
       setModalOpen(true);
       setLoading(false);
     }
@@ -89,30 +128,26 @@ function Signup() {
   return (
     <>
       {loading ? <Loading /> : null}
-      <div id='signup'>
-        <div>
-          <img src={SignupsImg} alt='signup-img' className='signup-img'></img>
-        </div>
-        <div className='signup-page'>
+      <SignupContainer>
+        <SignupImg src={SignupsImg} alt='signup-img'></SignupImg>
+        <SignupField>
           <div>
-            <img src={Logo} alt='coniamls-logo' className='signup-logo'></img>
+            <img src={Logo} alt='coniamls-logo' />
           </div>
           <h3>회원가입</h3>
-          <div className='desc input-title'>이메일</div>
+          <InputTitle>이메일</InputTitle>
 
-          <input
+          <ShadowBigInput
             type='text'
             className='input-signup'
             placeholder='example@gmail.com'
             onChange={handleInputValue('userEmail')}
           />
           {emailError ? (
-            <div className='validate-text'>
-              이메일 형식에 맞춰 작성해주세요.
-            </div>
+            <ValidateText>이메일 형식에 맞춰 작성해주세요.</ValidateText>
           ) : null}
-          <div className='desc input-title'>닉네임</div>
-          <input
+          <InputTitle>닉네임</InputTitle>
+          <ShadowBigInput
             type='text'
             className='input-signup'
             placeholder='Petmily'
@@ -120,47 +155,42 @@ function Signup() {
             maxLength='12'
           />
           {usernameError ? (
-            <div className='validate-text'>
+            <ValidateText>
               1~12자의 영문, 숫자, 한글이 사용 가능 합니다.
-            </div>
+            </ValidateText>
           ) : null}
-          <div className='desc input-title'>비밀번호</div>
+          <InputTitle>비밀번호</InputTitle>
 
-          <input
+          <ShadowBigInput
             type='text'
             className='input-signup'
             placeholder='8자 이상의 영문, 숫자를 입력해주세요'
             onChange={handleInputValue('password')}
           />
           {passwordError ? (
-            <div className='validate-text'>
+            <ValidateText>
               8자 이상의 영문, 숫자를 입력해야 합니다.
-            </div>
+            </ValidateText>
           ) : null}
-          <div className='desc input-title'>비밀번호 확인</div>
+          <InputTitle>비밀번호 확인</InputTitle>
 
-          <input
+          <ShadowBigInput
             type='text'
             className='input-signup'
             placeholder='8자 이상의 영문, 숫자를 입력해주세요'
             onChange={handleInputValue('retypePassword')}
           />
           {confirmPasswordError ? (
-            <div className='validate-text'>비밀번호가 다릅니다.</div>
+            <ValidateText>비밀번호가 다릅니다.</ValidateText>
           ) : null}
           <br />
-          <button className='btn' onClick={onSubmit}>
-            회원가입
-          </button>
+          <Button onClick={onSubmit}>회원가입</Button>
 
-          <div className='signup-login'>
-            이미 회원이신가요?{' '}
-            <a className='signup-login-link' href='/login'>
-              로그인
-            </a>
-          </div>
-        </div>
-      </div>
+          <SignupLogin>
+            이미 회원이신가요? <LoginLink href='/login'>로그인</LoginLink>
+          </SignupLogin>
+        </SignupField>
+      </SignupContainer>
 
       {modalOpen ? (
         <ConfirmModal handleModal={modalHandler}>

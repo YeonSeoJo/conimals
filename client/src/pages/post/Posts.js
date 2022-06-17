@@ -5,11 +5,12 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import Pagination from '../../components/Pagination';
 
 const PostsSection = styled.section`
   margin-top: 100px;
   width: 100%;
-  margin-top: 100px;
+  margin-top: 120px;
 `;
 
 const ControlBlock = styled.div`
@@ -19,8 +20,15 @@ const ControlBlock = styled.div`
   justify-content: flex-end;
 `;
 
+const PaginationBlock = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
 const Posts = () => {
   const [post, setPost] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(12);
 
   useEffect(() => {
     axios
@@ -29,17 +37,36 @@ const Posts = () => {
       .catch((err) => console.log(err));
   }, []);
 
+  const indexOfLast = currentPage * postsPerPage;
+  const indexOfFirst = indexOfLast - postsPerPage;
+  const currentPosts = (posts) => {
+    let currentPosts = 0;
+    currentPosts = posts.slice(indexOfFirst, indexOfLast);
+    return currentPosts;
+  };
+
   return (
     <>
       <PostsSection>
         <ControlBlock>
           <Link to={`/write`}>
-            <Button variant='contained' startIcon={<AddBoxIcon />}>
+            <Button
+              variant='contained'
+              style={{ backgroundColor: 'orange' }}
+              startIcon={<AddBoxIcon />}
+            >
               <h5>글쓰기</h5>
             </Button>
           </Link>
         </ControlBlock>
-        <PostsPageUl post={post}></PostsPageUl>
+        <PostsPageUl post={currentPosts(post)}></PostsPageUl>
+        <PaginationBlock>
+          <Pagination
+            postsPerPage={postsPerPage}
+            totalPosts={post.length}
+            paginate={setCurrentPage}
+          ></Pagination>
+        </PaginationBlock>
       </PostsSection>
     </>
   );
